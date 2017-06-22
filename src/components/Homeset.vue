@@ -37,139 +37,139 @@
 </template>
 
 <script>
-  import _ from "lodash";
-  import $ from "jquery";
-  import firebase from "firebase";
-  var config = {
-    apiKey: "AIzaSyC_ydXHKwzPnX4e9QXVlXA7ebmoGyHtoUQ",
-    authDomain: "teszt-b57ed.firebaseapp.com",
-    databaseURL: "https://teszt-b57ed.firebaseio.com",
-    storageBucket: "teszt-b57ed.appspot.com",
-    messagingSenderId: "821833751798"
+  import _ from 'lodash';
+  import $ from 'jquery';
+  import firebase from 'firebase';
+
+  const config = {
+    apiKey: 'AIzaSyC_ydXHKwzPnX4e9QXVlXA7ebmoGyHtoUQ',
+    authDomain: 'teszt-b57ed.firebaseapp.com',
+    databaseURL: 'https://teszt-b57ed.firebaseio.com',
+    storageBucket: 'teszt-b57ed.appspot.com',
+    messagingSenderId: '821833751798',
   };
   firebase.initializeApp(config);
 
-  var database = firebase.database();
+  const database = firebase.database();
 
   export default {
-    name: "homeset",
-    data () {
+    name: 'homeset',
+    data() {
       return {
         item: {
-          name: "",
+          name: '',
           quantity: 1,
-          barcode: "",
-          units: ""
+          barcode: '',
+          units: '',
         },
         editItemForm: {
-          ".key": "",
-          name: "",
+          '.key': '',
+          name: '',
           quantity: 1,
-          barcode: "",
-          units: ""
+          barcode: '',
+          units: '',
         },
-        itemFilter: "",
-        barcodeFilter: "",
+        itemFilter: '',
+        barcodeFilter: '',
         sortFilter: 0,
-        options: [
-          {
-            text: "kg",
-            value: "kg"
-          },
-          {
-            text: "db",
-            value: "db"
-          },
-          {
-            text: "liter",
-            value: "liter"
-          },
-          {
-            text: "csomag",
-            value: "csomag"
-          }
-        ]
+        options: [{
+          text: 'kg',
+          value: 'kg',
+        },
+        {
+          text: 'db',
+          value: 'db',
+        },
+        {
+          text: 'liter',
+          value: 'liter',
+        },
+        {
+          text: 'csomag',
+          value: 'csomag',
+        },
+        ],
+        firebase: {
+          items: database.ref('items'),
+          shoppingLists: database.ref('shoppingLists'),
+        },
       };
     },
-    firebase: {
-      items: database.ref("items"),
-      shoppingLists: database.ref("shoppingLists")
-    },
     methods: {
-      save: function () {
+      save() {
         this.$firebaseRefs.items.push(this.item);
         this.drop();
       },
-      drop: function () {
-        this.item.name = "";
+      drop() {
+        this.item.name = '';
         this.item.quantity = 1;
-        this.item.barcode = "";
-        this.item.units = "";
+        this.item.barcode = '';
+        this.item.units = '';
       },
-      editItem: function (item) {
-        this.editItemForm[".key"] = item[".key"];
+      editItem(item) {
+        this.editItemForm['.key'] = item['.key'];
         this.editItemForm.name = item.name;
         this.editItemForm.units = item.units;
         this.editItemForm.quantity = item.quantity;
         this.editItemForm.barcode = item.barcode;
       },
-      refreshList: function (item) {
-        var freshItem = {};
+      refreshList(item) {
+        const freshItem = {};
 
         freshItem.name = item.name;
         freshItem.quantity = item.quantity;
         freshItem.units = item.units;
 
-        database.ref(`shoppingLists/${item[".key"]}`).set(freshItem);
+        database.ref(`shoppingLists/${item['.key']}`).set(freshItem);
       },
-      deleteShoppingItem: function (item) {
-        $("#deleteItems").modal("show");
-        $("#yesDelete").one("click", function yesDeleteCallBack () {
-          database.ref(`shoppingLists/${item[".key"]}`).remove().then(function () {
-            console.log("Remove succeeded.");
-            $("#deleteItems").modal("hide");
-          }).catch(function (error) {
-            console.log("Remove failed:" + error.message);
+      deleteShoppingItem(item) {
+        $('#deleteItems').modal('show');
+        $('#yesDelete').one('click', () => {
+          database.ref(`shoppingLists/${item['.key']}`).remove().then(() => {
+            console.log('Remove succeeded.');
+            $('#deleteItems').modal('hide');
+          }).catch((error) => {
+            console.log(`'Remove failed:' ${error.message}`);
           });
         });
       },
-      getItem: function (item) {
-        var shoppingItem = {
-          name: item.name
+      getItem(item) {
+        const shoppingItem = {
+          name: item.name,
         };
 
         this.$firebaseRefs.shoppingLists.push(shoppingItem);
       },
-      saveEditedItem () {
-        var item = {};
+      saveEditedItem() {
+        const item = {};
 
         item.name = this.editItemForm.name;
         item.quantity = this.editItemForm.quantity;
         item.barcode = this.editItemForm.barcode;
         item.units = this.editItemForm.units;
-        database.ref(`items/${this.editItemForm[".key"]}`).set(item);
+        database.ref(`items/${this.editItemForm['.key']}`).set(item);
       },
-      deleteItem: function (item) {
-        $("#deleteItems").modal("show");
-        $("#yesDelete").one("click", function yesDeleteCallBack () {
-          database.ref(`items/${item[".key"]}`).remove().then(function () {
-            console.log("Remove succeeded.");
-            $("#deleteItems").modal("hide");
-          }).catch(function (error) {
-            console.log("Remove failed:" + error.message);
+      deleteItem(item) {
+        $('#deleteItems').modal('show');
+        $('#yesDelete').one('click', () => {
+          database.ref(`shoppingLists/${item['.key']}`).remove().then(() => {
+            console.log('Remove succeeded.');
+            $('#deleteItems').modal('hide');
+          }).catch((error) => {
+            console.log(`'Remove failed:' ${error.message}`);
           });
         });
       },
-      sortByQuantity: function () {
-        this.sortFilter++;
+      sortByQuantity() {
+        this.sortFilter += 1;
         if (this.sortFilter === 3) {
           this.sortFilter = 0;
         }
-      }
+      },
     },
     computed: {
-      filtereditems: function () {
-        var result = _.filter(this.items, (elem) => {
+      filtereditems() {
+        let result = _.filter(this.items, (elem) => {
           return elem.name.toLowerCase().includes(this.itemFilter.toLowerCase());
         });
 
@@ -178,20 +178,20 @@
         });
 
         if (this.sortFilter === 1) {
-          result = _.sortBy(result, "quantity");
+          result = _.sortBy(result, 'quantity');
         } else if (this.sortFilter === 2) {
-          result = _.sortBy(result, "quantity").reverse();
+          result = _.sortBy(result, 'quantity').reverse();
         }
         return result;
       },
-      filteredShoppingItems: function () {
-        var result = _.filter(this.shoppingLists, (elem) => {
+      filteredShoppingItems() {
+        const result = _.filter(this.shoppingLists, (elem) => {
           return elem.name;
         });
 
         return result;
-      }
-    }
+      },
+    },
   };
 
 </script>

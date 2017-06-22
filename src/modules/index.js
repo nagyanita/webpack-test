@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueAnalytics from 'vue-analytics';
 import router from '../router';
-import './hotjar';
 
 require('../../static/bootstrap/bootstrap.min.css');
 

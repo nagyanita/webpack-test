@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "next"
+  name: 'next',
 };
 </script>
 
