@@ -8,7 +8,6 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
-var PrerenderSpaPlugin = require('prerender-spa-plugin');
 
 var env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
@@ -54,9 +53,9 @@ var webpackConfig = merge(baseWebpackConfig, {
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: process.env.NODE_ENV === 'testing'
-        ? 'src/index.html'
+        ? 'index.html'
         : config.build.index,
-      template: 'src/index.html',
+      template: './src/index.html',
       inject: true,
       minify: {
         removeComments: true,
@@ -96,14 +95,6 @@ var webpackConfig = merge(baseWebpackConfig, {
         ignore: ['.*']
       }
     ])
-    /*
-    new PrerenderSpaPlugin(
-      // Absolute path to compiled SPA
-      path.join(__dirname, '../dist'),
-      // List of routes to prerender
-      [ '/', '/akciok', '/rolunk' ]
-    )
-    */
   ]
 })
 
