@@ -23,7 +23,7 @@
   }
 
   body {
-    background: url('../static/images/background.jpg') no-repeat 50% 30%;
+    background: url('./background.jpg') no-repeat 50% 30%;
   }
 
 </style>
