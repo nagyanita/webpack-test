@@ -1,8 +1,10 @@
 <template>
   <div class="homeset">
-    <div class="searchInputs"><input type="search" placeholder="Keresés név alapján..." v-model="itemFilter">
-      <input type="search" placeholder="Keresés vonalkód alapján..." v-model="barcodeFilter"></div>
-    <table class="table" id="itemsMainTable">
+    <div class="searchInputs">
+      <input type="search" placeholder="Keresés név alapján..." v-model="itemFilter">
+      <input type="search" placeholder="Keresés vonalkód alapján..." v-model="barcodeFilter">
+    </div>
+    <table class="table">
       <thead>
         <tr>
           <th width="15%">Név</th>
@@ -15,15 +17,32 @@
           <th width="10%"></th>
         </tr>
       </thead>
-      <tbody id="itemsTable" v-for="it in filtereditems">
+      <!--<tbody>
+        <tr>
+          <td> név </td>
+          <td> Menny </td>
+          <td> mértéke. </td>
+          <td> vonalkód</td>
+          <td>  <router-link to="/cikkszerkesztes"><button href="#editItem" data-toggle="tab" type="button" class="btn btn-default" v-on:click="editItem(it)">
+                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                 </button></router-link></td>
+          <td> <button href="#deleteItem" data-toggle="tab" type="button" class="btn btn-default" v-on:click="deleteItem(it)">
+                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                 </button></td>
+          <td> <button href="" data-toggle="tab" type="button" class="btn btn-default" v-on:click="getItem(it)">
+                 <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                 </button> </td>
+        </tr>
+      </tbody> -->
+     <tbody v-for="it in filteredItems">
         <tr>
           <td> {{ it.name }} </td>
           <td> {{ it.quantity }} </td>
           <td> {{ it.units }} </td>
           <td> {{ it.barcode }}</td>
-          <td> <button href="#editItem" data-toggle="tab" type="button" class="btn btn-default" v-on:click="editItem(it)">
+          <td>  <router-link to="/cikkszerkesztes"><button href="#editItem" data-toggle="tab" type="button" class="btn btn-default" v-on:click="editItem(it)">
                  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                 </button></td>
+                 </button></router-link></td>
           <td> <button href="#deleteItem" data-toggle="tab" type="button" class="btn btn-default" v-on:click="deleteItem(it)">
                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                  </button></td>
@@ -39,18 +58,6 @@
 <script>
   import _ from 'lodash';
   import $ from 'jquery';
-  import firebase from 'firebase';
-
-  const config = {
-    apiKey: 'AIzaSyC_ydXHKwzPnX4e9QXVlXA7ebmoGyHtoUQ',
-    authDomain: 'teszt-b57ed.firebaseapp.com',
-    databaseURL: 'https://teszt-b57ed.firebaseio.com',
-    storageBucket: 'teszt-b57ed.appspot.com',
-    messagingSenderId: '821833751798',
-  };
-  firebase.initializeApp(config);
-
-  const database = firebase.database();
 
   export default {
     name: 'homeset',
@@ -89,10 +96,6 @@
           value: 'csomag',
         },
         ],
-        firebase: {
-          items: database.ref('items'),
-          shoppingLists: database.ref('shoppingLists'),
-        },
       };
     },
     methods: {
@@ -120,12 +123,12 @@
         freshItem.quantity = item.quantity;
         freshItem.units = item.units;
 
-        database.ref(`shoppingLists/${item['.key']}`).set(freshItem);
+        this.database.ref(`shoppingLists/${item['.key']}`).set(freshItem);
       },
       deleteShoppingItem(item) {
         $('#deleteItems').modal('show');
         $('#yesDelete').one('click', () => {
-          database.ref(`shoppingLists/${item['.key']}`).remove().then(() => {
+          this.database.ref(`shoppingLists/${item['.key']}`).remove().then(() => {
             console.log('Remove succeeded.');
             $('#deleteItems').modal('hide');
           }).catch((error) => {
@@ -147,12 +150,12 @@
         item.quantity = this.editItemForm.quantity;
         item.barcode = this.editItemForm.barcode;
         item.units = this.editItemForm.units;
-        database.ref(`items/${this.editItemForm['.key']}`).set(item);
+        this.database.ref(`items/${this.editItemForm['.key']}`).set(item);
       },
       deleteItem(item) {
         $('#deleteItems').modal('show');
         $('#yesDelete').one('click', () => {
-          database.ref(`shoppingLists/${item['.key']}`).remove().then(() => {
+          this.database.ref(`shoppingLists/${item['.key']}`).remove().then(() => {
             console.log('Remove succeeded.');
             $('#deleteItems').modal('hide');
           }).catch((error) => {
@@ -168,7 +171,7 @@
       },
     },
     computed: {
-      filtereditems() {
+      filteredItems() {
         let result = _.filter(this.items, (elem) => {
           return elem.name.toLowerCase().includes(this.itemFilter.toLowerCase());
         });
@@ -196,7 +199,6 @@
 
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 
